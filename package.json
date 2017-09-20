@@ -16,6 +16,8 @@
     "express": "^4.15.4",
     "google-map-react": "^0.24.0",
     "mongoose": "^4.11.12",
+    "passport": "^0.4.0",
+    "passport-facebook": "^2.1.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "request": "^2.81.0",
