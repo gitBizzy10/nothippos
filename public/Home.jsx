@@ -14,7 +14,16 @@ import {
   Route,
   Link,
   location
-} from 'react-router-dom'
+} from 'react-router-dom';
+import {
+ withScriptjs,
+ withGoogleMap,
+ withPolyline,
+ GoogleMap,
+ Marker,
+ Polyline
+} from "react-google-maps";
+var polyCoordinates = [];
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -34,7 +43,9 @@ export default class Home extends React.Component {
       currentCityCenter: {
         lat: 41.9, lng: 87.624
       },
-      cityZoom: 10
+      cityZoom: 10,
+      coords:[],
+      polyCoordinates: []
     }
     this.addCity = this.addCity.bind(this);
     this.addTags = this.addTags.bind(this);
@@ -54,8 +65,11 @@ export default class Home extends React.Component {
     }
     var currentMarkers = this.state.cityMarkers;
     currentMarkers.push(newMarker);
+    //pushes position to an array in order to render polyLine later
+    polyCoordinates.push(position);
     this.setState({
-      cityMarkers: currentMarkers
+      cityMarkers: currentMarkers,
+      coords: polyCoordinates
     })
   }
 
@@ -260,19 +274,19 @@ export default class Home extends React.Component {
           saveNewTrips={this.saveNewTrips} currentCities={this.state.currentCities} changeCurrentEditCity={this.changeCurrentEditCity}
         />
                 <Route exact path={`/home/edit`} render={() => (
-          <EditPlanDisplay zoom={this.state.cityZoom} mapCenter={this.state.currentCityCenter} cityMarkers={this.state.cityMarkers} saveEvent={this.saveEvent} 
-          createNewEvent={this.createNewEvent} savedTags={this.state.savedTags} 
+          <EditPlanDisplay coords={this.state.coords} zoom={this.state.cityZoom} mapCenter={this.state.currentCityCenter} cityMarkers={this.state.cityMarkers} saveEvent={this.saveEvent}
+          createNewEvent={this.createNewEvent} savedTags={this.state.savedTags}
           tagClicked={this.tagClicked} currentEditCity={this.state.currentEditCity}/>
         )}/>
         <Route exact path={`/home`} render={() => (
-            <ShowCityTrip zoom={this.state.worldZoom} mapCenter={this.state.worldCenter} currentCities={this.state.currentCities} tags={this.state.tags} cityMarkers={this.state.cityMarkers} savedTags={this.state.savedTags} 
+            <ShowCityTrip zoom={this.state.worldZoom} mapCenter={this.state.worldCenter} currentCities={this.state.currentCities} tags={this.state.tags} cityMarkers={this.state.cityMarkers} savedTags={this.state.savedTags}
             tagClicked={this.tagClicked}
           />
         )}/>
 
-          
 
-      
+
+
       </div>
     )
   }

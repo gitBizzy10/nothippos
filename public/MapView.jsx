@@ -9,7 +9,7 @@ import {
 import SearchBox from "react-google-maps/lib/components/places/SearchBox";
 
 
-
+//renders the map via npm module react-google-maps
 const MapWithASearchBox = compose(
   withProps({
     googleMapURL: "https://maps.googleapis.com/maps/api/js?&v=3.exp&libraries=geometry,drawing,places&key=AIzaSyDvgO7kKFpb6Fo9FHcFfAIIcO4HMERU1fU",
@@ -68,6 +68,7 @@ const MapWithASearchBox = compose(
   withScriptjs,
   withGoogleMap
 )(function(props) {
+  const coords = [];
   return (
     <div className="mapView">
   <GoogleMap
@@ -77,11 +78,14 @@ const MapWithASearchBox = compose(
     onBoundsChanged={props.onBoundsChanged}
     >
 
-
-
    {props.cityMarkers.map((marker, index) =>
       <Marker key={index} position={marker.position} />
     )}
+
+    {props.coords.map(() =>
+      <Polyline path={props.coords}/>
+    )}
+
   </GoogleMap>
   </div>
 )}
@@ -90,6 +94,3 @@ const MapWithASearchBox = compose(
 <MapWithASearchBox />
 
 export default MapWithASearchBox;
-
-
-
