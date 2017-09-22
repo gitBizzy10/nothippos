@@ -7,6 +7,15 @@ import EditPlanDisplay from './EditPlanDisplay.jsx';
 import axios from 'axios';
 import querystring from 'querystring';
 import style from './style.css';
+import {
+  withScriptjs,
+  withGoogleMap,
+  withPolyline,
+  GoogleMap,
+  Marker,
+  Polyline
+} from "react-google-maps";
+var polyCoordinates = [];
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -18,7 +27,9 @@ export default class Home extends React.Component {
         events: []
       },
       savedTags: [],
-      cityMarkers: []
+      cityMarkers: [],
+      coords:[],
+      polyCoordinates: []
     }
     this.addCity = this.addCity.bind(this);
     this.addTags = this.addTags.bind(this);
@@ -37,15 +48,17 @@ export default class Home extends React.Component {
     }
     var currentMarkers = this.state.cityMarkers;
     currentMarkers.push(newMarker);
+    //pushes position to an array in order to render polyLine later
+    polyCoordinates.push(position);
     this.setState({
-      cityMarkers: currentMarkers
+      cityMarkers: currentMarkers,
+      coords: polyCoordinates
     })
   }
 
   componentDidMount() {
     axios.get('/api/tagList')
       .then(res => {
-        console.log(res)
         this.setState({
           savedTags: res.data
       })
@@ -57,7 +70,6 @@ export default class Home extends React.Component {
     this.setState ({
       currentEditCity: temp
     })
-    console.log(this.state);
   }
 
   createNewEvent () {
@@ -75,7 +87,6 @@ export default class Home extends React.Component {
     this.setState ({
       currentEditCity: tempCurrentEditCity
     })
-    console.log(this.state.currentEditCity);
   }
 
   saveEvent (idx, activityName, date, time, location, notes) {
@@ -112,7 +123,6 @@ export default class Home extends React.Component {
     this.setState ({
       currentEditCity: city
     })
-    console.log(this.state.currentEditCity);
 
   }
 
@@ -144,14 +154,12 @@ export default class Home extends React.Component {
     this.setState ({
       currentCities: tempCities
     })
-    console.log(this.state);
   }
 
   addTags (tripName) {
     this.setState ({
       tags: tripName
     })
-    console.log(this.state);
   }
 
   saveNewTrips() {
@@ -187,7 +195,6 @@ export default class Home extends React.Component {
       }
     })
     .then(res => {
-      console.log(res)
       var temp = [];
       var tempObj = {};
       for (var i = 0; i < res.data.length; i++) {
@@ -204,13 +211,12 @@ export default class Home extends React.Component {
   }
 
   render() {
-
     return (
       <div>
         <InputBar changeCityMarkers={this.changeCityMarkers} addCityToParent={this.addCity} addTagsToParent={this.addTags}
           saveNewTrips={this.saveNewTrips} currentCities={this.state.currentCities} changeCurrentEditCity={this.changeCurrentEditCity}
           />
-        <EditPlanDisplay cityMarkers={this.state.cityMarkers} saveEvent={this.saveEvent} createNewEvent={this.createNewEvent} savedTags={this.state.savedTags} tagClicked={this.tagClicked} currentEditCity={this.state.currentEditCity}/>
+        <EditPlanDisplay coords={this.state.coords} cityMarkers={this.state.cityMarkers} saveEvent={this.saveEvent} createNewEvent={this.createNewEvent} savedTags={this.state.savedTags} tagClicked={this.tagClicked} currentEditCity={this.state.currentEditCity}/>
       </div>
     )
   }
